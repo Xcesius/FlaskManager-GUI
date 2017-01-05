@@ -203,7 +203,7 @@ Loop
 		}
 		Gdip_UnlockBits(pBitmapHaystack, BitmapData)
 		Gdip_DisposeImage(pBitmapHaystack)
-		Sleep 20 ;Small sleep timer in main cycle
+		Sleep 100 ;Small sleep timer in main cycle
 	}
 	else
 		Sleep 3000 ;Waiting for game to activate

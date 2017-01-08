@@ -74,92 +74,49 @@ IfNotExist, Settings.ini
 
 readFromFile()
 
-Gui,Add,Hotkey,x48 y4 w50 h21 vFlask1key,%flask1key%
-Gui,Add,Edit,x105 y4 w40 h21 vFlask1dur,%flask1dur%
-Gui,Add,Edit,x153 y4 w50 h21 vFlask1triggerkey, %flask1triggerkey%
-Gui,Add,Text,x5 y7 w35 h13,Flask 1
-Gui,Add,Checkbox,x210 y8 w95 h13 vFlaskbox1, Flask 1 Enabled
-
-Gui,Add,Hotkey,x48 y30 w50 h21 vFlask2key, %flask2key%
-Gui,Add,Edit,x153 y30 w50 h21 vFlask2triggerkey, %flask2triggerkey%
-Gui,Add,Edit,x105 y31 w40 h21 vFlask2dur,%flask2dur%
-Gui,Add,Checkbox,x210 y32 w95 h13 vFlaskbox2,Flask 2 Enabled
-Gui,Add,Text,x5 y35 w35 h13,Flask 2
-
-Gui,Add,Hotkey,x48 y57 w50 h21 vFlask3key, %flask3key%
-Gui,Add,Edit,x105 y58 w40 h21 vFlask3dur,%flask3dur%
-Gui,Add,Edit,x153 y58 w50 h21 vFlask3triggerkey, %flask3triggerkey%
-Gui,Add,Text,x5 y61 w35 h13,Flask 3
-Gui,Add,Checkbox,x210 y61 w95 h13 vFlaskbox3,Flask 3 Enabled
-
-Gui,Add,Hotkey,x48 y85 w50 h21 vFlask4key, %flask4key%
-Gui,Add,Edit,x105 y85 w40 h21 vFlask4dur,%flask4dur%
-Gui,Add,Edit,x153 y86 w50 h21 vFlask4triggerkey, %flask4triggerkey%
-Gui,Add,Text,x5 y88 w35 h13,Flask 4
-Gui,Add,Checkbox,x210 y91 w95 h13 vFlaskbox4,Flask 4 Enabled
-
-Gui,Add,Hotkey,x48 y113 w50 h21 vFlask5key, %flask5key%
-Gui,Add,Edit,x105 y114 w40 h21 vFlask5dur,%flask5dur%
-Gui,Add,Edit,x153 y114 w50 h21 vFlask5triggerkey, %flask5triggerkey%
-Gui,Add,Text,x5 y118 w35 h13,Flask 5
-Gui,Add,Checkbox,x210 y119 w95 h13 vFlaskbox5,Flask 5 Enabled
+Gui Add, Tab3, vTab x4 y-1 w543 h396 -wrap, Flasks|Debug|Other stuff
 
 
-Gui,Font,norm s14,
-Gui,Add,Text,x14 y167 w100 h30,Debug
-Gui,Add,Text,x167 y167 w100 h30,Health
-Gui,Add,Text,x330 y167 w100 h30,Mana
+Gui, Tab, 2 ;Debug stuff here
+Gui,2:Add,CheckBox, w95 h13 vDebugColors, Debugging Colors Enabled
 
-Gui,Font
-Gui,Add,Text,x17 y193 w21 h13,X
-Gui,Add,Text,x55 y193 w21 h13,Y
+Gui, Tab, 1 ; General stuff
+Gui Add, Hotkey, vFlask1key x47 y31 w50 h21, %flask1key%
+Gui Add, Edit, vFlask1dur x102 y31 w40 h21, %flask1dur%
+Gui Add, Edit, vFlask1triggerkey x148 y30 w50 h21, %flask1triggerkey%
+Gui Add, Text, x7 y34 w35 h13, Flask 1
+Gui Add, Checkbox, vFlaskbox1 x208 y32 w95 h13, Flask 1 Enabled
 
-Gui,Add,Text,x174 y193 w21 h13,X
-Gui,Add,Text,x211 y193 w21 h13,Y
+Gui Add, Hotkey, vFlask2key x47 y57 w50 h21, %flask2key%
+Gui Add, Edit, vFlask2triggerkey x148 y57 w50 h21, %flask2triggerkey%
+Gui Add, Edit, vFlask2dur x102 y57 w40 h21, %flask2dur%
+Gui Add, Checkbox, vFlaskbox2 x208 y60 w95 h13, Flask 2 Enabled
+Gui Add, Text, x7 y60 w35 h13, Flask 2
 
-Gui,Add,Text,x332 y193 w21 h13,X
-Gui,Add,Text,x367 y193 w21 h13,Y
-Gui,Add,Edit,x9 y212 w30 h21 vDebugX,%debugX%
-Gui,Add,Edit,x47 y212 w30 h21 vDebugY,%debugY%
+Gui Add, Hotkey, vFlask3key x47 y83 w50 h21, %flask3key%
+Gui Add, Edit, vFlask3dur x102 y83 w40 h21, %flask3dur%
+Gui Add, Edit, vFlask3triggerkey x148 y83 w50 h21, %flask3triggerkey%
+Gui Add, Text, x7 y86 w35 h13, Flask 3
+Gui Add, Checkbox, vFlaskbox3 x208 y86 w95 h13, Flask 3 Enabled
 
-Gui,Add,Edit,x166 y212 w30 h21 vHealthx,15
-Gui,Add,Edit,x203 y212 w30 h21 vHealthy,1233
-Gui,Add,Edit,x323 y212 w30 h21 vManax,1324
-Gui,Add,Edit,x360 y212 w30 h21 vManay,1254
+Gui Add, Hotkey, vFlask4key x47 y109 w50 h21, %flask4key%
+Gui Add, Edit, vFlask4dur x102 y109 w40 h21, %flask4dur%
+Gui Add, Edit, vFlask4triggerkey x148 y109 w50 h21, %flask4triggerkey%
+Gui Add, Text, x7 y112 w35 h13, Flask 4
+Gui Add, Checkbox, vFlaskbox4 x208 y112 w95 h13, Flask 4 Enabled
 
-Gui,Add,Text,x17 y233 w21 h13,R
-Gui,Add,Text,x56 y233 w21 h13,G
-Gui,Add,Text,x89 y233 w21 h13,B
-
-Gui,Add,Text,x174 y233 w21 h13,R
-Gui,Add,Text,x212 y233 w21 h13,G
-Gui,Add,Text,x249 y233 w21 h13,B
-
-Gui,Add,Text,x331 y233 w21 h13,R
-Gui,Add,Text,x368 y233 w21 h13,G
-Gui,Add,Text,x407 y233 w21 h13,B
-
-;Debugger RGB
-Gui,Add,Edit,x8 y248 w27 h21 vDebugr,%debugR%
-Gui,Add,Edit,x48 y248 w27 h21 vDebugg,%debugG%
-Gui,Add,Edit,x87 y248 w27 h21 vDebugb,%debugB%
-
-;Health RGB
-Gui,Add,Edit,x166 y248 w27 h21 vHealthr,6
-Gui,Add,Edit,x203 y248 w27 h21 vHealthg,6
-Gui,Add,Edit,x239 y248 w27 h21 vHealthb,9
-
-;Mana RGB
-Gui,Add,Edit,x322 y248 w27 h21 vManar,3
-Gui,Add,Edit,x360 y248 w27 h21 vManag,3
-Gui,Add,Edit,x398 y248 w27 h21 vManab,2
+Gui Add, Hotkey, vFlask5key x47 y134 w50 h21, %flask5key%
+Gui Add, Edit, vFlask5dur x102 y134 w40 h21, %flask5dur%
+Gui Add, Edit, vFlask5triggerkey x148 y134 w50 h21, %flask5triggerkey%
+Gui Add, Text, x7 y137 w35 h13, Flask 5
+Gui Add, Checkbox, vFlaskbox5 x208 y138 w95 h13, Flask 5 Enabled
 
 ;Monitor Setting
-Gui Add, Text, x11 y285 w100 h30, Monitor Number
-Gui Add, Edit, x32 y305 w30 h21 vMonitor1number, %monitor1number%
+Gui Add, Text, x333 y103 w100 h30, Monitor Number
+Gui Add, Edit, vMonitor1number x352 y122 w30 h21, %monitor1number%
 
-Gui, Add, Button, ys default gupdateHotkeys, Okay
-Gui,Show,w500 h375,Flask Manager GUI
+Gui, Add, Button, x413 y23 w37 h23 default, Save
+Gui,Show,w450 h281,Flask Manager GUI
 
 global flasktrigger1 := flask1triggerkey
 global flasktrigger2 := flask2triggerkey
@@ -187,16 +144,29 @@ global flaskbox3 := Flaskbox3
 global flaskbox4 := Flaskbox4
 global flaskbox5 := Flaskbox5
 
-
 Loop 5
 { 
 	IfExist, settings.ini
 {
-		
-		value := flaskbox%A_Index%
 		Iniread, Flaskbox%A_Index%, settings.ini, CheckBox, FlaskBox%A_index%
 		value := Flaskbox%A_Index%
 		GuiControl, , Flaskbox%A_Index%, %value%
+}
+}
+
+Loop 1
+{ 
+	IfExist, settings.ini
+{
+		Iniread, debugR, settings.ini, variables, debugR
+		value := debugR
+		GuiControl, , debugR, %value%
+		Iniread, debugG, settings.ini, variables, debugG
+		value := debugG
+		GuiControl, , debugG, %value%
+		Iniread, debugB, settings.ini, variables, debugB
+		value := debugB
+		GuiControl, , debugB, %value%
 }
 }
 
@@ -211,7 +181,7 @@ Loop
 		;if(GetKeyState(flasktrigger1, "P")){
 		;MeasureAverageColor3x3(Scan, debugX, debugY, Stride)
      	;}
-		;MeasureAverageColor3x3(Scan, 514, 1054, Stride)
+		MeasureAverageColor3x3(Scan, 230, 954, Stride)
 		
 		;if(GetKeyState(flask1triggerkey, "P")) {
 		;MsgBox You're dumb.
@@ -369,10 +339,10 @@ MeasureAverageColor3x3(Scan, x, y, Stride) ;Shows average color of 3x3 pixel box
 	r0 := 0
 	g0 := 0
 	b0 := 0	
-
-	Loop 3 {
+	
+	Loop 1 {
 		X_index := A_index
-		Loop 3 {
+		Loop 1 {
 			Gdip_FromARGB(Gdip_GetLockBitPixel(Scan, x - 2 + X_index, y - 2 + A_index, Stride), a1, r1, g1, b1)
 			r0 := r0 + r1
 			g0 := g0 + g1
@@ -380,9 +350,11 @@ MeasureAverageColor3x3(Scan, x, y, Stride) ;Shows average color of 3x3 pixel box
 		}
 	}
 	r0 := r0 / 9
+	IniWrite, %r0%, Settings.ini, variables, debugR %A_Space% 
 	g0 := g0 / 9
+	IniWrite, %g0%, Settings.ini, variables, debugG %A_Space% 
 	b0 := b0 / 9
-	MsgBox %r0% %g0% %b0%
+	IniWrite, %b0%, Settings.ini, variables, debugB %A_Space% 
 }
 
 

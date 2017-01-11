@@ -14,7 +14,7 @@ Flask1_timer := 0
 Flask2_timer := 0
 Flask3_timer := 0
 Flask4_timer := 0
-Flask5_timer := 0
+Flask5_timer := 0	
 Enter_key_timer := 0
 ;#####################################################################################
 IfNotExist, Settings.ini
@@ -225,16 +225,17 @@ readPlayerStats(byRef PlayerStats){
 		curHP:=NumGet(LifeStructure, 0x54, "UInt")
 		resHP:=NumGet(LifeStructure, 0x60, "Uint")
 		maxHP:=NumGet(LifeStructure, 0x50, "UInt")
-		curMana:=NumGet(LifeStructure, 0x90, "UInt")
-		resMana:=NumGet(LifeStructure, 0x8C, "Uint")
-		maxMana:=NumGet(LifeStructure, 0x50, "UInt")
+		
+		curMana:=NumGet(LifeStructure, 0x84, "UInt")
+		resMana:=NumGet(LifeStructure, 0x90, "Uint")
+		maxMana:=NumGet(LifeStructure, 0x80, "UInt")
 		if(maxHP>0 and curHP>0){
 			PlayerStats.hpres:=resHP*100/100
-			PlayerStats.hp:=(curHP*100)/100/maxHP*100-PlayerStats.hpres
-			PlayerStats.mana:=curMana*100/100/maxMana*100-PlayerStats.resMana
+			PlayerStats.hp:=(curHP*100)/100/maxHP*100-resHP
+			PlayerStats.mp:=(curMana*100)/100/maxMana*100-resMana
 		}else{
 			PlayerStats.hp:=0
-			PlayerStats.mana:=0
+			PlayerStats.mp:=0
 		}
 	}
 }
@@ -249,6 +250,8 @@ Loop
 	readPlayerStats(PlayerStats)
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
+	PlayerTest:=PlayerStats.flatresHP
+	MsgBox %PlayerMP%
 		if(PlayerHP>0){
 			;MsgBox %PlayerHP%
 			Flask1Logic()

@@ -251,7 +251,6 @@ Loop
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
 	PlayerTest:=PlayerStats.flatresHP
-	MsgBox %PlayerMP%
 		if(PlayerHP>0){
 			;MsgBox %PlayerHP%
 			Flask1Logic()
@@ -260,8 +259,8 @@ Loop
 			Flask4Logic()
 			Flask5Logic()
 }
-	;MsgBox %PlayerHP%
 }
+	RandSleep(0,30)
 }
 
 global PlayerHP
@@ -273,17 +272,20 @@ global ManaPct
 
 Flask1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
 {
+	;MsgBox %PlayerMP% Player!
+	;MsgBox %ManaPct% Setting!
 	global Flask1_timer
-	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Health" and PlayerHP <= HealthPct {
+	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Health" and PlayerHP <= HealthPct{
 		Sendinput, {%flaskkeybind1% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind1% Up}
 		Flask1_timer := A_TickCount
 	}
-	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Mana" and PlayerMP <= ManaPct {
+	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Mana" and PlayerMP <= ManaPct{
 		Sendinput, {%flaskkeybind1% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind1% Up}
+		MsgBox Used Mana pot at %PlayerMP% <= %ManaPct%
 		Flask1_timer := A_TickCount
 	}
 	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Normal" and GetKeyState(flasktrigger1, "P"){
@@ -299,13 +301,13 @@ Flask1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic 
 Flask2Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
 {
 	global Flask2_timer
-	if (A_TickCount - Flask2_timer > flask2duration) and Flaskbox2 == 1 and FlaskType2 == "Health" and PlayerHP <= HealthPct {
+	if (A_TickCount - Flask2_timer > flask2duration) and Flaskbox2 == 1 and FlaskType2 == "Health" and PlayerHP <= HealthPct{
 		Sendinput, {%flaskkeybind2% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind2% Up}
 		Flask2_timer := A_TickCount
 	}
-	if (A_TickCount - Flask2_timer > flask2duration) and Flaskbox2 == 1 and FlaskType2 == "Mana" and PlayerMP <= ManaPct {
+	if (A_TickCount - Flask2_timer > flask2duration) and Flaskbox2 == 1 and FlaskType2 == "Mana" and PlayerMP <= ManaPct{
 		Sendinput, {%flaskkeybind2% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind2% Up}
@@ -324,13 +326,13 @@ Flask2Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic 
 Flask3Logic() ; Jade 4000 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 6400 ms
 {
 	global Flask3_timer
-	if (A_TickCount - Flask3_timer > flask3duration) and Flaskbox3 == 1 and FlaskType3 == "Health" and PlayerHP <= HealthPct {
+	if (A_TickCount - Flask3_timer > flask3duration) and Flaskbox3 == 1 and FlaskType3 == "Health" and PlayerHP <= HealthPct{
 		Sendinput, {%flaskkeybind3% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind3% Up}
 		Flask3_timer := A_TickCount
 	}
-	if (A_TickCount - Flask3_timer > flask3duration) and Flaskbox3 == 1 and FlaskType3 == "Mana" and PlayerMP <= ManaPct {
+	if (A_TickCount - Flask3_timer > flask3duration) and Flaskbox3 == 1 and FlaskType3 == "Mana" and PlayerMP <= ManaPct{
 		Sendinput, {%flaskkeybind3% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind3% Up}
@@ -348,13 +350,13 @@ Flask3Logic() ; Jade 4000 Base + 60% (20% quality, 12% alchemist, 20% druidic ri
 Flask4Logic() ; witchfire 5000 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 8000 ms
 {
 	global Flask4_timer
-	if (A_TickCount - Flask4_timer > flask4duration) and Flaskbox4 == 1 and FlaskType4 == "Health" and PlayerHP <= HealthPct {
+	if (A_TickCount - Flask4_timer > flask4duration) and Flaskbox4 == 1 and FlaskType4 == "Health" and PlayerHP <= HealthPct{
 		Sendinput, {%flaskkeybind4% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind4% Up}
 		Flask4_timer := A_TickCount
 	}
-	if (A_TickCount - Flask4_timer > flask4duration) and Flaskbox4 == 1 and FlaskType4 == "Mana" and PlayerMP <= ManaPct {
+	if (A_TickCount - Flask4_timer > flask4duration) and Flaskbox4 == 1 and FlaskType4 == "Mana" and PlayerMP <= ManaPct{
 		Sendinput, {%flaskkeybind4% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind4% Up}
@@ -372,13 +374,13 @@ Flask4Logic() ; witchfire 5000 Base + 60% (20% quality, 12% alchemist, 20% druid
 Flask5Logic() ; witchfire 5000 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 8000 ms
 {
 	global Flask5_timer
-	if (A_TickCount - Flask5_timer > flask5duration) and Flaskbox5 == 1 and FlaskType5 == "Health" and PlayerHP <= HealthPct {
+	if (A_TickCount - Flask5_timer > flask5duration) and Flaskbox5 == 1 and FlaskType5 == "Health" and PlayerHP <= HealthPct{
 		Sendinput, {%flaskkeybind5% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind5% Up}
 		Flask5_timer := A_TickCount
 	}
-	if (A_TickCount - Flask5_timer > flask5duration) and Flaskbox5 == 1 and FlaskType5 == "Mana" and PlayerMP <= ManaPct {
+	if (A_TickCount - Flask5_timer > flask5duration) and Flaskbox5 == 1 and FlaskType5 == "Mana" and PlayerMP <= ManaPct{
 		Sendinput, {%flaskkeybind5% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind5% Up}

@@ -251,7 +251,6 @@ Loop
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
 	PlayerTest:=PlayerStats.flatresHP
-	MsgBox %PlayerMP%
 		if(PlayerHP>0){
 			;MsgBox %PlayerHP%
 			Flask1Logic()

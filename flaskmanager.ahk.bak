@@ -1,4 +1,3 @@
-
 ;#####################################################################################
 if not A_IsAdmin
 {
@@ -161,6 +160,9 @@ Gui, Add, Button, x500 y23 w37 h23 default gupdateEverything, Save
 
 Gui,Show,w550 h281,Flask Manager GUI
 
+global NormalFlaskCount=0
+global HealthFlaskCount=0
+global ManaFlaskCount=0
 
 Loop 5
 { 
@@ -181,6 +183,7 @@ Loop 5
 
 ;=================startup load the frameBase (IngameState)===============
 ;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/Offsets.cs:        private static readonly Pattern basePtrPattern = new Pattern(new byte[]
+SetFormat, Integer, hex
 basePtrPattern:=[0x40, 0x53, 0x48, 0x83, 0xEC, 0x50, 0x48, 0xC7, 0x44, 0x24, 0x20, 0xFE, 0xFF, 0xFF, 0xFF, 0xC7, 0x44, 0x24, 0x60, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8b, 0x05]
 	if(Steambox == 0){
 		cliexe := "PathOfExile_x64.exe"
@@ -196,13 +199,13 @@ baseMgrPtr:=poe.read(poe.BaseAddress+PatternIsAt+0x1A, "UInt")+PatternIsAt+0x1E
 
 ;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/TheGame.cs :       Address = m.ReadLong(Offsets.Base + m.AddressOfProcess, 0x8, 0xf8);
 ;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/TheGame.cs :       public IngameState IngameState => ReadObject<IngameState>(Address + 0x38);
+;mBase+baseMgrPtr,4,0xFC,0x1c
 global frameBase:=poe.read(poe.BaseAddress+baseMgrPtr, "Int64", 0x8, 0xf8, 0x38)
 global IngameState:=frameBase
 
 ;=======================retrieve current data============================
 readPlayerStats(byRef PlayerStats){
 	global Steambox
-	SetFormat, Integer, hex
 	;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/IngameState.cs :       public IngameData Data => ReadObject<IngameData>(Address + 0x160 + Offsets.IgsOffset);
 	if(Steambox == 1){
 	InGameData:=poe.read(IngameState+0x160+0x28, "Int64")
@@ -211,7 +214,14 @@ readPlayerStats(byRef PlayerStats){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
 	}
 	
-	;MsgBox %Steambox%
+    uiBase:=poe.read(IngameState+0x5C0+0x28, "Int64")
+	ServerData:=poe.read(IngameState, "Int64", 0x168+0x28)
+	FlaskInvBase:=poe.read(ServerData, "Int64", 0x240, 0x9c8, 0x948, 0xa00, 0x20)
+
+	;FlaskLocalstatsPtr:=GetMultilevelPointer(ph,[currFlaskPtr,4,0x18,0x14,0xC])
+	FlaskLocalstatsPtr:=poe.read(ServerData, "Int64", 4, 0x18, 0x1C, 0xC)
+	
+	;MsgBox %ServerData%
 	PlayerStats.isInGame:=False
 	if(InGameData>0xffff){
 		PlayerStats.isInGame:=True
@@ -224,8 +234,7 @@ readPlayerStats(byRef PlayerStats){
 		poe.readRaw(LPLifeComponent, LifeStructure, 0xB8)
 		curHP:=NumGet(LifeStructure, 0x54, "UInt")
 		resHP:=NumGet(LifeStructure, 0x60, "Uint")
-		maxHP:=NumGet(LifeStructure, 0x50, "UInt")
-		
+		maxHP:=NumGet(LifeStructure, 0x50, "UInt")	
 		curMana:=NumGet(LifeStructure, 0x84, "UInt")
 		resMana:=NumGet(LifeStructure, 0x90, "Uint")
 		maxMana:=NumGet(LifeStructure, 0x80, "UInt")
@@ -244,6 +253,24 @@ readPlayerStats(byRef PlayerStats){
 PlayerStats:=Object()
 Loop
 {
+	global HealthFlaskCount
+		
+		Iniread, FlaskType%A_Index%, settings.ini, CheckBox, FlaskType%A_index%
+		valueFlaskType := FlaskType%A_Index%
+		if(valueFlaskType == "Normal"){
+		NormalFlaskCount++
+	    }
+		if(valueFlaskType == "Health"){
+		HealthFlaskCount++
+		;MsgBox %HealthFlaskCount%
+	    }
+		if(valueFlaskType == "Mana"){
+		ManaFlaskCount++
+	    }
+	if(HealthFlaskCount >= 1){
+	Random R, 1, %HealthFlaskCount%
+	;MsgBox %R%
+    }
 	IfWinActive, Path of Exile ahk_class POEWindowClass
 	{
 	;MsgBox %FlaskType5%
@@ -260,7 +287,7 @@ Loop
 			Flask5Logic()
 }
 }
-	RandSleep(0,30)
+	Sleep, 50
 }
 
 global PlayerHP
@@ -285,7 +312,6 @@ Flask1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic 
 		Sendinput, {%flaskkeybind1% Down}
 		RandSleep(0,100)
 		Sendinput, {%flaskkeybind1% Up}
-		MsgBox Used Mana pot at %PlayerMP% <= %ManaPct%
 		Flask1_timer := A_TickCount
 	}
 	if (A_TickCount - Flask1_timer > flask1duration) and Flaskbox1 == 1 and FlaskType1 == "Normal" and GetKeyState(flasktrigger1, "P"){

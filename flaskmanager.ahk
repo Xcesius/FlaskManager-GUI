@@ -9,6 +9,7 @@ if not A_IsAdmin
 SetBatchLines, -1
 
 BF_timer := 0
+Key1_Timer := 0
 Flask1_timer := 0
 Flask2_timer := 0
 Flask3_timer := 0
@@ -32,6 +33,9 @@ IfNotExist, Settings.ini
 	defaultIni .= "XPos=1920`n"
 	defaultIni .= "YPos=1080`n"
 	
+	defaultIni .= "HealthPercentKey1=75`n"
+	defaultIni .= "DelayKey1=50`n"
+	
 	defaultIni .= "[Checkbox]`n"
 	defaultIni .= "Flaskbox1=1`n"
 	defaultIni .= "Flaskbox2=1`n"
@@ -44,6 +48,7 @@ IfNotExist, Settings.ini
 	defaultIni .= "FlaskType4=Normal`n"
 	defaultIni .= "FlaskType5=Normal`n"
 	defaultIni .= "Steambox=0`n"
+	defaultIni .= "AbilityKey1Box=0`n"
 	
 	
 	defaultIni .= "[hotkeys]`n"
@@ -57,6 +62,8 @@ IfNotExist, Settings.ini
 	defaultIni .= "Flask3triggerkey=RButton`n"
 	defaultIni .= "Flask4triggerkey=RButton`n"
 	defaultIni .= "Flask5triggerkey=RButton`n"
+	
+	defaultIni .= "AbilityKey1=RButton`n"
 	FileAppend, %defaultIni%, Settings.ini, UTF-16
 }
 
@@ -92,7 +99,7 @@ global FlaskType3
 global FlaskType4
 global FlaskType5
 
-Gui Add, Tab3, vTab x4 y-1 w550 h396 -wrap, Flasks|Debug|Other stuff
+Gui Add, Tab3, vTab x4 y-1 w550 h396 -wrap, Flasks|Abilites|Other stuff
 values = |Normal|Health|Mana
 Gui, Tab, 1 ; General stuff
 Gui Add, Hotkey, vFlask1key x47 y31 w50 h21, %flask1key%
@@ -145,13 +152,15 @@ Gui Add, Text, x50 y170 w70 h40, Health Percentage
 Gui Add, Text, x170 y170 w70 h40, Mana Percentage
 
 Gui, Tab, 2 ;Debug stuff here
+Gui, Font, s7 Arial
+Gui Add, Text, x10 y40 w100 h30, Ability Key
+Gui Add, Text, x75 y40 w100 h30, HP
+Gui Add, Text, x135 y40 w100 h30, Delay
+Gui Add, Edit, vAbilityKey1 x10 y60 w30 h21, %AbilityKey1%
+Gui Add, Edit, vHealthPercentKey1 x70 y60 w30 h21, %HealthPercentKey1%
+Gui Add, Edit, vDelayKey1 x135 y60 w30 h21, %DelayKey1%
+Gui Add, Checkbox, vAbilityKey1Box x200 y55 w80 h30, Ability 1
 
-Gui Add, Text, x10 y40 w100 h30, X Position
-Gui Add, Text, x80 y40 w100 h30, Y Position
-Gui Add, Edit, vXPos x10 y60 w40 h21, %xPos%
-Gui Add, Edit, vYPos x80 y60 w40 h21, %yPos%
-
-Gui, Add, CheckBox, x170 y50 w100 h30 vDebugColors, Debugging Colors Enabled
 Gui, Add, Button, x500 y23 w37 h23 default gupdateEverything, Save
 
 Gui, Tab, 3 ;Debug stuff here
@@ -170,12 +179,15 @@ Loop 5
 {
 		Iniread, Flaskbox%A_Index%, settings.ini, CheckBox, Flaskbox%A_index%
 		valueFlask := Flaskbox%A_Index%
+		Iniread, AbilityKey%A_Index%Box, settings.ini, CheckBox, AbilityKey%A_Index%Box
+		valueAbility := AbilityKey%A_Index%Box
 		Iniread, FlaskType%A_Index%, settings.ini, CheckBox, FlaskType%A_index%
 		valueFlaskType := FlaskType%A_Index%
 		;MsgBox %valueFlaskType%
 		Iniread, Steambox, settings.ini, CheckBox, Steambox
 		valueSteam := Steambox
 		GuiControl, , Flaskbox%A_Index%, %valueFlask%
+		GuiControl, , AbilityKey%A_Index%Box, %valueAbility%
 		GuiControl, , Steambox, %valueSteam%
 		GuiControl, ChooseString, FlaskType%A_Index%, %valueFlaskType%
 }
@@ -254,7 +266,6 @@ PlayerStats:=Object()
 Loop
 {
 	global HealthFlaskCount
-		
 		Iniread, FlaskType%A_Index%, settings.ini, CheckBox, FlaskType%A_index%
 		valueFlaskType := FlaskType%A_Index%
 		if(valueFlaskType == "Normal"){
@@ -277,9 +288,10 @@ Loop
 	readPlayerStats(PlayerStats)
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
-	PlayerTest:=PlayerStats.flatresHP
+	PlayerTest:=PlayerStats.flatresHP		
 		if(PlayerHP>0){
 			;MsgBox %PlayerHP%
+			AbilityKey1Logic()
 			Flask1Logic()
 			Flask2Logic()
 			Flask3Logic()
@@ -295,6 +307,25 @@ global PlayerMP
 global HealthPct
 global ManaPct
 
+
+
+
+;#####################################################################################
+
+AbilityKey1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
+{
+	global AbilityKey1
+	global AbilityKey1Box
+    global HealthPercentKey1
+	global DelayKey1	
+	global Key1_Timer
+	if (A_TickCount - Key1_Timer > DelayKey1) and AbilityKey1Box == 1 and  PlayerHP <= HealthPercentKey1{
+		Sendinput, {%AbilityKey1% Down}
+		RandSleep(0,100)
+		Sendinput, {%AbilityKey1% Up}
+		Key1_Timer := A_TickCount
+	}
+}
 ;#####################################################################################
 
 Flask1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
@@ -517,11 +548,10 @@ readFromFile(){
 	;Monitor 
 	IniRead, Monitor1number, settings.ini, variables, MonitorNumber %A_Space%
 	
-	;debugstuff variables
-	IniRead, DebugX, settings.ini, variables, DebugX %A_Space%
-	IniRead, DebugY, settings.ini, variables, DebugY %A_Space%
-	IniRead, XPos, settings.ini, variables, xPos %A_Space%
-	IniRead, YPos, settings.ini, variables, yPos %A_Space%
+	;Ability Key stuff
+	IniRead, HealthPercentKey1, settings.ini, variables, HealthPercentKey1 %A_Space%
+	IniRead, DelayKey1, settings.ini, variables, DelayKey1 %A_Space%
+	IniRead, AbilityKey1, settings.ini, hotkeys, AbilityKey1 %A_Space%
 	
 	;Hotkeys
 	IniRead, Flask1key, settings.ini, hotkeys, Flask1key %A_SPACE%
@@ -572,6 +602,7 @@ updateEverything:
 	IniWrite, %FlaskType5%, settings.ini, Checkbox, FlaskType5 %A_Space%
 	IniWrite, %Steambox%, settings.ini, Checkbox, Steambox %A_Space%
 	
+	
 	IniWrite, %Flask2key%, Settings.ini, hotkeys, Flask2key %A_Space%
 	IniWrite, %Flask2triggerkey%, Settings.ini, hotkeys, Flask2triggerkey %A_Space%
 	
@@ -583,6 +614,13 @@ updateEverything:
 	
 	IniWrite, %Flask5key%, Settings.ini, hotkeys, Flask5key %A_Space%
 	IniWrite, %Flask5triggerkey%, Settings.ini, hotkeys, Flask5triggerkey %A_Space%
+	
+		;Ability Key stuff
+	IniWrite, %HealthPercentKey1%, settings.ini, variables, HealthPercentKey1 %A_Space%
+	IniWrite, %DelayKey1%, settings.ini, variables, DelayKey1 %A_Space%
+	IniWrite, %AbilityKey1%, settings.ini, hotkeys, AbilityKey1 %A_Space%
+	IniWrite, %AbilityKey1Box%, settings.ini, Checkbox, AbilityKey1Box %A_Space%
+	
 	
 	
 	readFromFile()

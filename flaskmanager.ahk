@@ -277,10 +277,11 @@ readPlayerStats(byRef PlayerStats){
 		;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/Components/Life.cs :      public int CurHP => Address != 0 ? M.ReadInt(Address + 0x54) : 1;   public int CurMana => Address != 0 ? M.ReadInt(Address + 0x84) : 1;
 		poe.readRaw(LPLifeComponent, LifeStructure, 0xB8)
 		
-		;BuffListStart:=poe.read(LocalPlayer+0xD8, "Int64")
-		;BuffListEnd:=poe.read(LocalPlayer+0xE0, "Int64")
-		;BuffAmount:=((BuffListEnd-BuffListStart)/4)
-		;PlayerStats.BuffAmount:=((BuffListEnd-BuffListStart)/4)
+		BuffListStart:=poe.read(LocalPlayer+0xD8, "Int64")
+		BuffListEnd:=poe.read(LocalPlayer+0xE0, "Int64")
+		BuffAmount:=((BuffListEnd-BuffListStart)/8)
+		PlayerStats.BuffAmount:=((BuffListEnd-BuffListStart)/8)
+		;MsgBox %BuffAmount%
 		;buffName:=NumGet(LifeStructure, 0x28, "UInt")
 		curHP:=NumGet(LifeStructure, 0x54, "UInt")
 		curCI:=NumGet(LifeStructure, 0xB4, "UInt")
@@ -313,7 +314,8 @@ Loop
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
     PlayerCI:=PlayerStats.ci
-	if(ChickenBox == "Health" and PlayerHP <= HealthPctChicken){
+		if(PlayerHP>0){
+				if(ChickenBox == "Health" and PlayerHP <= HealthPctChicken){
 	if(Steambox == 1){
 	run, cports.exe /close * * * * PathOfExile_x64Steam.exe
 	}
@@ -329,7 +331,6 @@ Loop
 	run, cports.exe /close * * * * PathOfExile_x64.exe
     }
 	}
-		if(PlayerHP>0){
 			AbilityKey1Logic()
 			AbilityKey2Logic()
 			AbilityKey3Logic()

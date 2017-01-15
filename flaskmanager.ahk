@@ -10,6 +10,8 @@ SetBatchLines, -1
 
 BF_timer := 0
 Key1_Timer := 0
+Key2_Timer := 0
+Key3_Timer := 0
 Flask1_timer := 0
 Flask2_timer := 0
 Flask3_timer := 0
@@ -32,9 +34,15 @@ IfNotExist, Settings.ini
 	defaultIni .= "MonitorNumber=1`n"
 	defaultIni .= "XPos=1920`n"
 	defaultIni .= "YPos=1080`n"
+	defaultIni .= "HealthPctChicken=0`n"
+	defaultIni .= "ShieldPctChicken=0`n"
 	
 	defaultIni .= "HealthPercentKey1=75`n"
 	defaultIni .= "DelayKey1=50`n"
+	defaultIni .= "HealthPercentKey2=75`n"
+	defaultIni .= "DelayKey2=50`n"
+	defaultIni .= "HealthPercentKey3=75`n"
+	defaultIni .= "DelayKey3=50`n"
 	
 	defaultIni .= "[Checkbox]`n"
 	defaultIni .= "Flaskbox1=1`n"
@@ -48,7 +56,10 @@ IfNotExist, Settings.ini
 	defaultIni .= "FlaskType4=Normal`n"
 	defaultIni .= "FlaskType5=Normal`n"
 	defaultIni .= "Steambox=0`n"
+	defaultIni .= "ChickenBox=Disabled`n"
 	defaultIni .= "AbilityKey1Box=0`n"
+	defaultIni .= "AbilityKey2Box=0`n"
+	defaultIni .= "AbilityKey3Box=0`n"
 	
 	
 	defaultIni .= "[hotkeys]`n"
@@ -63,7 +74,9 @@ IfNotExist, Settings.ini
 	defaultIni .= "Flask4triggerkey=RButton`n"
 	defaultIni .= "Flask5triggerkey=RButton`n"
 	
-	defaultIni .= "AbilityKey1=RButton`n"
+	defaultIni .= "AbilityKey1=1`n"
+	defaultIni .= "AbilityKey2=2`n"
+	defaultIni .= "AbilityKey3=3`n"
 	FileAppend, %defaultIni%, Settings.ini, UTF-16
 }
 
@@ -99,8 +112,9 @@ global FlaskType3
 global FlaskType4
 global FlaskType5
 
-Gui Add, Tab3, vTab x4 y-1 w550 h396 -wrap, Flasks|Abilites|Other stuff
+Gui Add, Tab3, vTab x4 y-1 w550 h396 -wrap, Flasks|Abilites|Chicken
 values = |Normal|Health|Mana
+values1 = |Disabled|Health|Shield
 Gui, Tab, 1 ; General stuff
 Gui Add, Hotkey, vFlask1key x47 y31 w50 h21, %flask1key%
 Gui Add, Edit, vFlask1dur x102 y31 w40 h21, %flask1dur%
@@ -161,17 +175,36 @@ Gui Add, Edit, vHealthPercentKey1 x70 y60 w30 h21, %HealthPercentKey1%
 Gui Add, Edit, vDelayKey1 x135 y60 w30 h21, %DelayKey1%
 Gui Add, Checkbox, vAbilityKey1Box x200 y55 w80 h30, Ability 1
 
+Gui Add, Text, x10 y90 w100 h30, Ability Key 
+Gui Add, Text, x75 y90 w100 h30, HP
+Gui Add, Text, x135 y90 w100 h30, Delay
+Gui Add, Edit, vAbilityKey2 x10 y105 w30 h21, %AbilityKey2%
+Gui Add, Edit, vHealthPercentKey2 x70 y105 w30 h21, %HealthPercentKey2%
+Gui Add, Edit, vDelayKey2 x135 y105 w30 h21, %DelayKey2%
+Gui Add, Checkbox, vAbilityKey2Box x200 y100 w80 h30, Ability 2
+
+Gui Add, Text, x10 y130 w100 h30, Ability Key 
+Gui Add, Text, x75 y130 w100 h30, HP
+Gui Add, Text, x135 y130 w100 h30, Delay
+Gui Add, Edit, vAbilityKey3 x10 y145 w30 h21, %AbilityKey3%
+Gui Add, Edit, vHealthPercentKey3 x70 y145 w30 h21, %HealthPercentKey3%
+Gui Add, Edit, vDelayKey3 x135 y145 w30 h21, %DelayKey3%
+Gui Add, Checkbox, vAbilityKey3Box x200 y140 w80 h30, Ability 3
+
 Gui, Add, Button, x500 y23 w37 h23 default gupdateEverything, Save
 
 Gui, Tab, 3 ;Debug stuff here
+Gui Add, Edit, vHealthPctChicken x40 y55 w50 h21, %HealthPctChicken%
+Gui Add, Edit, vShieldPctChicken x150 y55 w50 h21, %ShieldPctChicken%
+Gui Add, ComboBox, vChickenBox x275 y55 w100 h70, %values1%
+Gui, Font, s10 Arial
+Gui Add, Text, x50 y30 w70 h25, HP
+Gui Add, Text, x155 y30 w70 h25, Shield
+Gui, Font, s7 Arial
 Gui, Add, Button, x500 y23 w37 h23 default gupdateEverything, Save
 
 
 Gui,Show,w550 h281,Flask Manager GUI
-
-global NormalFlaskCount=0
-global HealthFlaskCount=0
-global ManaFlaskCount=0
 
 Loop 5
 { 
@@ -179,6 +212,8 @@ Loop 5
 {
 		Iniread, Flaskbox%A_Index%, settings.ini, CheckBox, Flaskbox%A_index%
 		valueFlask := Flaskbox%A_Index%
+		Iniread, ChickenBox, settings.ini, CheckBox, ChickenBox
+		valueChicken := ChickenBox
 		Iniread, AbilityKey%A_Index%Box, settings.ini, CheckBox, AbilityKey%A_Index%Box
 		valueAbility := AbilityKey%A_Index%Box
 		Iniread, FlaskType%A_Index%, settings.ini, CheckBox, FlaskType%A_index%
@@ -189,6 +224,7 @@ Loop 5
 		GuiControl, , Flaskbox%A_Index%, %valueFlask%
 		GuiControl, , AbilityKey%A_Index%Box, %valueAbility%
 		GuiControl, , Steambox, %valueSteam%
+		GuiControl, ChooseString, ChickenBox, %valueChicken%
 		GuiControl, ChooseString, FlaskType%A_Index%, %valueFlaskType%
 }
 }
@@ -225,14 +261,10 @@ readPlayerStats(byRef PlayerStats){
 	if(Steambox == 0){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
 	}
-	
+	; public string Name => M.ReadStringU(M.ReadLong(Address + 8, 0));
+
     uiBase:=poe.read(IngameState+0x5C0+0x28, "Int64")
 	ServerData:=poe.read(IngameState, "Int64", 0x168+0x28)
-	FlaskInvBase:=poe.read(ServerData, "Int64", 0x240, 0x9c8, 0x948, 0xa00, 0x20)
-
-	;FlaskLocalstatsPtr:=GetMultilevelPointer(ph,[currFlaskPtr,4,0x18,0x14,0xC])
-	FlaskLocalstatsPtr:=poe.read(ServerData, "Int64", 4, 0x18, 0x1C, 0xC)
-	
 	;MsgBox %ServerData%
 	PlayerStats.isInGame:=False
 	if(InGameData>0xffff){
@@ -244,7 +276,15 @@ readPlayerStats(byRef PlayerStats){
 		LPLifeComponent:=poe.read(LocalPlayer+0x8, "Int64", 0x18)
 		;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/Components/Life.cs :      public int CurHP => Address != 0 ? M.ReadInt(Address + 0x54) : 1;   public int CurMana => Address != 0 ? M.ReadInt(Address + 0x84) : 1;
 		poe.readRaw(LPLifeComponent, LifeStructure, 0xB8)
+		
+		;BuffListStart:=poe.read(LocalPlayer+0xD8, "Int64")
+		;BuffListEnd:=poe.read(LocalPlayer+0xE0, "Int64")
+		;BuffAmount:=((BuffListEnd-BuffListStart)/4)
+		;PlayerStats.BuffAmount:=((BuffListEnd-BuffListStart)/4)
+		;buffName:=NumGet(LifeStructure, 0x28, "UInt")
 		curHP:=NumGet(LifeStructure, 0x54, "UInt")
+		curCI:=NumGet(LifeStructure, 0xB4, "UInt")
+		maxCI:=NumGet(LifeStructure, 0xB0, "UInt")
 		resHP:=NumGet(LifeStructure, 0x60, "Uint")
 		maxHP:=NumGet(LifeStructure, 0x50, "UInt")	
 		curMana:=NumGet(LifeStructure, 0x84, "UInt")
@@ -253,9 +293,11 @@ readPlayerStats(byRef PlayerStats){
 		if(maxHP>0 and curHP>0){
 			PlayerStats.hpres:=resHP*100/100
 			PlayerStats.hp:=(curHP*100)/100/maxHP*100-resHP
+			PlayerStats.ci:=(curCI*100)/100/maxCI*100
 			PlayerStats.mp:=(curMana*100)/100/maxMana*100-resMana
 		}else{
 			PlayerStats.hp:=0
+			PlayerStats.ci:=0
 			PlayerStats.mp:=0
 		}
 	}
@@ -265,33 +307,32 @@ readPlayerStats(byRef PlayerStats){
 PlayerStats:=Object()
 Loop
 {
-	global HealthFlaskCount
-		Iniread, FlaskType%A_Index%, settings.ini, CheckBox, FlaskType%A_index%
-		valueFlaskType := FlaskType%A_Index%
-		if(valueFlaskType == "Normal"){
-		NormalFlaskCount++
-	    }
-		if(valueFlaskType == "Health"){
-		HealthFlaskCount++
-		;MsgBox %HealthFlaskCount%
-	    }
-		if(valueFlaskType == "Mana"){
-		ManaFlaskCount++
-	    }
-	if(HealthFlaskCount >= 1){
-	Random R, 1, %HealthFlaskCount%
-	;MsgBox %R%
-    }
 	IfWinActive, Path of Exile ahk_class POEWindowClass
 	{
-	;MsgBox %FlaskType5%
 	readPlayerStats(PlayerStats)
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
-	PlayerTest:=PlayerStats.flatresHP		
+    PlayerCI:=PlayerStats.ci
+	if(ChickenBox == "Health" and PlayerHP <= HealthPctChicken){
+	if(Steambox == 1){
+	run, cports.exe /close * * * * PathOfExile_x64Steam.exe
+	}
+	if(Steambox == 0){
+	run, cports.exe /close * * * * PathOfExile_x64.exe
+    }
+    }
+	if(ChickenBox == "Shield" and PlayerCI <= HealthPctChicken){
+	if(Steambox == 1){
+	run, cports.exe /close * * * * PathOfExile_x64Steam.exe
+    }
+	if(Steambox == 0){
+	run, cports.exe /close * * * * PathOfExile_x64.exe
+    }
+	}
 		if(PlayerHP>0){
-			;MsgBox %PlayerHP%
 			AbilityKey1Logic()
+			AbilityKey2Logic()
+			AbilityKey3Logic()
 			Flask1Logic()
 			Flask2Logic()
 			Flask3Logic()
@@ -304,10 +345,9 @@ Loop
 
 global PlayerHP
 global PlayerMP
+global PlayerCI
 global HealthPct
 global ManaPct
-
-
 
 
 ;#####################################################################################
@@ -324,6 +364,38 @@ AbilityKey1Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% dru
 		RandSleep(0,100)
 		Sendinput, {%AbilityKey1% Up}
 		Key1_Timer := A_TickCount
+	}
+}
+;#####################################################################################
+
+AbilityKey2Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
+{
+	global AbilityKey2
+	global AbilityKey2Box
+    global HealthPercentKey2
+	global DelayKey2	
+	global Key2_Timer
+	if (A_TickCount - Key2_Timer > DelayKey2) and AbilityKey2Box == 1 and  PlayerHP <= HealthPercentKey2{
+		Sendinput, {%AbilityKey2% Down}
+		RandSleep(0,100)
+		Sendinput, {%AbilityKey2% Up}
+		Key2_Timer := A_TickCount
+	}
+}
+;#####################################################################################
+
+AbilityKey3Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
+{
+	global AbilityKey3
+	global AbilityKey3Box
+    global HealthPercentKey3
+	global DelayKey3	
+	global Key3_Timer
+	if (A_TickCount - Key3_Timer > DelayKey3) and AbilityKey3Box == 1 and  PlayerHP <= HealthPercentKey3{
+		Sendinput, {%AbilityKey3% Down}
+		RandSleep(0,100)
+		Sendinput, {%AbilityKey3% Up}
+		Key3_Timer := A_TickCount
 	}
 }
 ;#####################################################################################
@@ -544,6 +616,8 @@ readFromFile(){
 	IniRead, Flask5dur, settings.ini, variables, Flask5dur %A_Space%
 	IniRead, HealthPct, settings.ini, variables, HealthPct %A_Space%
 	IniRead, ManaPct, settings.ini, variables, ManaPct %A_Space%
+	IniRead, HealthPctChicken, settings.ini, variables, HealthPctChicken %A_Space%
+	IniRead, ShieldPctChicken, settings.ini, variables, ShieldPctChicken %A_Space%
 	
 	;Monitor 
 	IniRead, Monitor1number, settings.ini, variables, MonitorNumber %A_Space%
@@ -552,6 +626,12 @@ readFromFile(){
 	IniRead, HealthPercentKey1, settings.ini, variables, HealthPercentKey1 %A_Space%
 	IniRead, DelayKey1, settings.ini, variables, DelayKey1 %A_Space%
 	IniRead, AbilityKey1, settings.ini, hotkeys, AbilityKey1 %A_Space%
+	IniRead, HealthPercentKey2, settings.ini, variables, HealthPercentKey2 %A_Space%
+	IniRead, DelayKey2, settings.ini, variables, DelayKey2 %A_Space%
+	IniRead, AbilityKey2, settings.ini, hotkeys, AbilityKey2 %A_Space%
+	IniRead, HealthPercentKey3, settings.ini, variables, HealthPercentKey3 %A_Space%
+	IniRead, DelayKey3, settings.ini, variables, DelayKey3 %A_Space%
+	IniRead, AbilityKey3, settings.ini, hotkeys, AbilityKey3 %A_Space%
 	
 	;Hotkeys
 	IniRead, Flask1key, settings.ini, hotkeys, Flask1key %A_SPACE%
@@ -586,6 +666,8 @@ updateEverything:
 	IniWrite, %Flask5dur%, Settings.ini, variables, Flask5dur %A_Space%
 	IniWrite, %HealthPct%, Settings.ini, variables, HealthPct %A_Space%
 	IniWrite, %ManaPct%, Settings.ini, variables, ManaPct %A_Space%
+	IniWrite, %HealthPctChicken%, settings.ini, variables, HealthPctChicken %A_Space%
+	IniWrite, %ShieldPctChicken%, settings.ini, variables, ShieldPctChicken %A_Space%
 	
 	;Hotkeys and stuff
 	IniWrite, %Flask1key%, Settings.ini, hotkeys, Flask1key %A_Space%
@@ -601,6 +683,7 @@ updateEverything:
 	IniWrite, %FlaskType4%, settings.ini, Checkbox, FlaskType4 %A_Space%
 	IniWrite, %FlaskType5%, settings.ini, Checkbox, FlaskType5 %A_Space%
 	IniWrite, %Steambox%, settings.ini, Checkbox, Steambox %A_Space%
+	IniWrite, %ChickenBox%, settings.ini, Checkbox, ChickenBox %A_Space%
 	
 	
 	IniWrite, %Flask2key%, Settings.ini, hotkeys, Flask2key %A_Space%
@@ -620,6 +703,16 @@ updateEverything:
 	IniWrite, %DelayKey1%, settings.ini, variables, DelayKey1 %A_Space%
 	IniWrite, %AbilityKey1%, settings.ini, hotkeys, AbilityKey1 %A_Space%
 	IniWrite, %AbilityKey1Box%, settings.ini, Checkbox, AbilityKey1Box %A_Space%
+	
+	IniWrite, %HealthPercentKey2%, settings.ini, variables, HealthPercentKey2 %A_Space%
+	IniWrite, %DelayKey2%, settings.ini, variables, DelayKey2 %A_Space%
+	IniWrite, %AbilityKey2%, settings.ini, hotkeys, AbilityKey2 %A_Space%
+	IniWrite, %AbilityKey2Box%, settings.ini, Checkbox, AbilityKey2Box %A_Space%
+	
+	IniWrite, %HealthPercentKey3%, settings.ini, variables, HealthPercentKey3 %A_Space%
+	IniWrite, %DelayKey3%, settings.ini, variables, DelayKey3 %A_Space%
+	IniWrite, %AbilityKey3%, settings.ini, hotkeys, AbilityKey3 %A_Space%
+	IniWrite, %AbilityKey3Box%, settings.ini, Checkbox, AbilityKey3Box %A_Space%
 	
 	
 	

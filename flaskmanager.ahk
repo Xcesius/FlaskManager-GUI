@@ -323,7 +323,7 @@ Loop
 	run, cports.exe /close * * * * PathOfExile_x64.exe
     }
     }
-	if(ChickenBox == "Shield" and PlayerCI <= HealthPctChicken){
+	if(ChickenBox == "Shield" and PlayerCI <= ShieldPctChicken){
 	if(Steambox == 1){
 	run, cports.exe /close * * * * PathOfExile_x64Steam.exe
     }

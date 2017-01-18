@@ -43,6 +43,8 @@ IfNotExist, Settings.ini
 	defaultIni .= "DelayKey2=50`n"
 	defaultIni .= "HealthPercentKey3=75`n"
 	defaultIni .= "DelayKey3=50`n"
+	defaultIni .= "HealthPercentKey4=75`n"
+	defaultIni .= "DelayKey4=50`n"
 	
 	defaultIni .= "[Checkbox]`n"
 	defaultIni .= "Flaskbox1=1`n"
@@ -61,6 +63,7 @@ IfNotExist, Settings.ini
 	defaultIni .= "AbilityKey1Box=Disabled`n"
 	defaultIni .= "AbilityKey2Box=Disabled`n"
 	defaultIni .= "AbilityKey3Box=Disabled`n"
+	defaultIni .= "AbilityKey4Box=Disabled`n"
 	
 	
 	defaultIni .= "[hotkeys]`n"
@@ -78,6 +81,7 @@ IfNotExist, Settings.ini
 	defaultIni .= "AbilityKey1=1`n"
 	defaultIni .= "AbilityKey2=2`n"
 	defaultIni .= "AbilityKey3=3`n"
+	defaultIni .= "AbilityKey4=4`n"
 	FileAppend, %defaultIni%, Settings.ini, UTF-16
 }
 
@@ -185,17 +189,25 @@ Gui Add, Edit, vHealthPercentKey2 x70 y105 w30 h21, %HealthPercentKey2%
 Gui Add, Edit, vDelayKey2 x135 y105 w30 h21, %DelayKey2%
 Gui Add, ComboBox, vAbilityKey2Box x200 y105 w80 h120, %values1%
 
-Gui Add, Text, x10 y130 w100 h30, Ability Key 
-Gui Add, Text, x70 y130 w100 h30, HP/CI
-Gui Add, Text, x135 y130 w100 h30, Delay
-Gui Add, Edit, vAbilityKey3 x10 y145 w30 h21, %AbilityKey3%
-Gui Add, Edit, vHealthPercentKey3 x70 y145 w30 h21, %HealthPercentKey3%
-Gui Add, Edit, vDelayKey3 x135 y145 w30 h21, %DelayKey3%
-Gui Add, ComboBox, vAbilityKey3Box x200 y145 w80 h120, %values1%
+Gui Add, Text, x10 y135 w100 h30, Ability Key 
+Gui Add, Text, x70 y135 w100 h30, HP/CI
+Gui Add, Text, x135 y135 w100 h30, Delay
+Gui Add, Edit, vAbilityKey3 x10 y150 w30 h21, %AbilityKey3%
+Gui Add, Edit, vHealthPercentKey3 x70 y150 w30 h21, %HealthPercentKey3%
+Gui Add, Edit, vDelayKey3 x135 y150 w30 h21, %DelayKey3%
+Gui Add, ComboBox, vAbilityKey3Box x200 y150 w80 h120, %values1%
+
+Gui Add, Text, x10 y180 w100 h30, Ability Key 
+Gui Add, Text, x70 y180 w100 h30, HP/CI
+Gui Add, Text, x135 y180 w100 h30, Delay
+Gui Add, Edit, vAbilityKey4 x10 y195 w30 h21, %AbilityKey4%
+Gui Add, Edit, vHealthPercentKey4 x70 y195 w30 h21, %HealthPercentKey4%
+Gui Add, Edit, vDelayKey4 x135 y195 w30 h21, %DelayKey4%
+Gui Add, ComboBox, vAbilityKey4Box x200 y195 w80 h120, %values1%
 
 
-Gui Add, Text, x10 y180 w90 h30, Blade Flurry Release
-Gui Add, Combobox, vBFReleaseBox x10 y220 w90 h120, %values2%
+Gui Add, Text, x370 y60 w90 h50, Blade Flurry Release
+Gui Add, Combobox, vBFReleaseBox x370 y90 w90 h120, %values2%
 
 Gui, Add, Button, x500 y23 w37 h23 default gupdateEverything, Save
 
@@ -333,9 +345,9 @@ readPlayerStats(byRef PlayerStats){
 PlayerStats:=Object()
 Loop
 {
+	readPlayerStats(PlayerStats)
 	IfWinActive, Path of Exile ahk_class POEWindowClass
 	{
-	readPlayerStats(PlayerStats)
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
     PlayerCI:=PlayerStats.ci
@@ -379,6 +391,7 @@ Loop
 			AbilityKey1Logic()
 			AbilityKey2Logic()
 			AbilityKey3Logic()
+			AbilityKey4Logic()
 			Flask1Logic()
 			Flask2Logic()
 			Flask3Logic()
@@ -442,6 +455,22 @@ AbilityKey3Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% dru
 		RandSleep(0,100)
 		Sendinput, {%AbilityKey3% Up}
 		Key3_Timer := A_TickCount
+	}
+}
+;#####################################################################################
+
+AbilityKey4Logic() ; Atziri 3500 Base + 60% (20% quality, 12% alchemist, 20% druidic rite, 8% pathfinder) = 5600 ms
+{
+	global AbilityKey4
+	global AbilityKey4Box
+    global HealthPercentKey4
+	global DelayKey4	
+	global Key4_Timer
+	if (A_TickCount - Key4_Timer > DelayKey4 and ((AbilityKey4Box == "Health" and  PlayerHP <= HealthPercentKey4) or (AbilityKey4Box == "Shield" and PlayerCI <= HealthPercentKey4))){
+		Sendinput, {%AbilityKey4% Down}
+		RandSleep(0,100)
+		Sendinput, {%AbilityKey4% Up}
+		Key4_Timer := A_TickCount
 	}
 }
 ;#####################################################################################
@@ -676,8 +705,11 @@ readFromFile(){
 	IniRead, DelayKey2, settings.ini, variables, DelayKey2 %A_Space%
 	IniRead, AbilityKey2, settings.ini, hotkeys, AbilityKey2 %A_Space%
 	IniRead, HealthPercentKey3, settings.ini, variables, HealthPercentKey3 %A_Space%
+	IniRead, HealthPercentKey4, settings.ini, variables, HealthPercentKey4 %A_Space%
 	IniRead, DelayKey3, settings.ini, variables, DelayKey3 %A_Space%
 	IniRead, AbilityKey3, settings.ini, hotkeys, AbilityKey3 %A_Space%
+	IniRead, DelayKey4, settings.ini, variables, DelayKey4 %A_Space%
+	IniRead, AbilityKey4, settings.ini, hotkeys, AbilityKey4 %A_Space%
 	
 	;Hotkeys
 	IniRead, Flask1key, settings.ini, hotkeys, Flask1key %A_SPACE%
@@ -759,6 +791,11 @@ updateEverything:
 	IniWrite, %DelayKey3%, settings.ini, variables, DelayKey3 %A_Space%
 	IniWrite, %AbilityKey3%, settings.ini, hotkeys, AbilityKey3 %A_Space%
 	IniWrite, %AbilityKey3Box%, settings.ini, Checkbox, AbilityKey3Box %A_Space%
+	
+	IniWrite, %HealthPercentKey4%, settings.ini, variables, HealthPercentKey4 %A_Space%
+	IniWrite, %DelayKey4%, settings.ini, variables, DelayKey4 %A_Space%
+	IniWrite, %AbilityKey4%, settings.ini, hotkeys, AbilityKey4 %A_Space%
+	IniWrite, %AbilityKey4Box%, settings.ini, Checkbox, AbilityKey4Box %A_Space%
 	
 	
 	

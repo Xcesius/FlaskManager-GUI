@@ -269,6 +269,8 @@ baseMgrPtr:=poe.read(poe.BaseAddress+PatternIsAt+0x1A, "UInt")+PatternIsAt+0x1E
 ;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/TheGame.cs :       Address = m.ReadLong(Offsets.Base + m.AddressOfProcess, 0x8, 0xf8);
 ;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/TheGame.cs :       public IngameState IngameState => ReadObject<IngameState>(Address + 0x38);
 ;mBase+baseMgrPtr,4,0xFC,0x1c
+global testBase:=poe.read(poe.BaseAddress+baseMgrPtr, "Int64", 0x8, 0xf8)
+global testBase1:=poe.read(testBase+0x38, "Int64")
 global frameBase:=poe.read(poe.BaseAddress+baseMgrPtr, "Int64", 0x8, 0xf8, 0x38)
 global IngameState:=frameBase
 
@@ -283,12 +285,11 @@ readPlayerStats(byRef PlayerStats){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
 	}
 	; public string Name => M.ReadStringU(M.ReadLong(Address + 8, 0));
-
-    uiBase:=poe.read(IngameState+0x5C0+0x28, "Int64")
-	;MsgBox %ServerData%
-	PlayerStats.isInGame:=False
-	if(InGameData>0xffff){
-		PlayerStats.isInGame:=True
+	
+	serverData:=poe.read(IngameState+0x168+0x28, "Int64")
+	inGameNumber:=poe.read(serverData+0x39C8, "Int64")
+	global isProperInGame:=inGameNumber*100/100
+	if(isProperInGame > 2){
 		;serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 		;flaskArray:=poe.read(serverData+0x240, "Int64", 0x9C8, 0x948, 0xA00, 0x20)
 		;flask1:=poe.read(flaskArray+2*8)
@@ -351,6 +352,7 @@ Loop
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
     PlayerCI:=PlayerStats.ci
+	PlayerInGame:=isProperInGame
 	loop, %BuffAmount%
 		{
 			BuffTimer:=PlayerStats.BuffTimer[A_Index]
@@ -370,8 +372,7 @@ Loop
 				continue
 			}
 		}
-	;BuffName%A_Index%:=PlayerStats.BuffName[A_Index]
-		if(PlayerHP>0){
+		if(PlayerInGame > 2){
 	if(ChickenBox == "Health" and PlayerHP <= HealthPctChicken){
 	if(Steambox == 1){
 	run, cports.exe /close * * * * PathOfExile_x64Steam.exe

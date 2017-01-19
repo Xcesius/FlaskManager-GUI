@@ -288,7 +288,7 @@ readPlayerStats(byRef PlayerStats){
 	
 	serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 	inGameNumber:=poe.read(serverData+0x39C8, "Int64")
-	isProperInGame:=inGameNumber*100/100
+	global isProperInGame:=inGameNumber*100/100
 	if(isProperInGame > 2){
 		;serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 		;flaskArray:=poe.read(serverData+0x240, "Int64", 0x9C8, 0x948, 0xA00, 0x20)
@@ -352,7 +352,6 @@ Loop
 	PlayerHP:=PlayerStats.hp
 	PlayerMP:=PlayerStats.mp
     PlayerCI:=PlayerStats.ci
-	PlayerInGame:=isProperInGame
 	loop, %BuffAmount%
 		{
 			BuffTimer:=PlayerStats.BuffTimer[A_Index]
@@ -372,7 +371,7 @@ Loop
 				continue
 			}
 		}
-		if(PlayerInGame > 2){
+		if(isProperInGame>=3){
 	if(ChickenBox == "Health" and PlayerHP <= HealthPctChicken){
 	if(Steambox == 1){
 	run, cports.exe /close * * * * PathOfExile_x64Steam.exe
@@ -763,6 +762,7 @@ updateEverything:
 	IniWrite, %FlaskType5%, settings.ini, Checkbox, FlaskType5 %A_Space%
 	IniWrite, %Steambox%, settings.ini, Checkbox, Steambox %A_Space%
 	IniWrite, %ChickenBox%, settings.ini, Checkbox, ChickenBox %A_Space%
+	IniWrite, %BFReleaseBox%, settings.ini, Checkbox, BFReleaseBox %A_Space%
 	
 	
 	IniWrite, %Flask2key%, Settings.ini, hotkeys, Flask2key %A_Space%

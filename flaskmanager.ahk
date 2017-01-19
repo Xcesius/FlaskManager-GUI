@@ -288,7 +288,7 @@ readPlayerStats(byRef PlayerStats){
 	
 	serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 	inGameNumber:=poe.read(serverData+0x39C8, "Int64")
-	global isProperInGame:=inGameNumber*100/100
+	isProperInGame:=inGameNumber*100/100
 	if(isProperInGame > 2){
 		;serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 		;flaskArray:=poe.read(serverData+0x240, "Int64", 0x9C8, 0x948, 0xA00, 0x20)

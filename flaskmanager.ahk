@@ -280,13 +280,14 @@ readPlayerStats(byRef PlayerStats){
 	;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/IngameState.cs :       public IngameData Data => ReadObject<IngameData>(Address + 0x160 + Offsets.IgsOffset);
 	if(Steambox == 1){
 	InGameData:=poe.read(IngameState+0x160+0x28, "Int64")
+	serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 	}
 	if(Steambox == 0){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
+	serverData:=poe.read(IngameState+0x168, "Int64")
 	}
 	; public string Name => M.ReadStringU(M.ReadLong(Address + 8, 0));
 	
-	serverData:=poe.read(IngameState+0x168+0x28, "Int64")
 	inGameNumber:=poe.read(serverData+0x39C8, "Int64")
 	global isProperInGame:=inGameNumber*100/100
 	if(isProperInGame > 2){

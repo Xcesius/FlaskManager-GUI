@@ -286,7 +286,7 @@ readPlayerStats(byRef PlayerStats){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
 	serverData:=poe.read(IngameState+0x168, "Int64")
 	}
-	inGameNumber:=poe.read(serverData+0x39C8, "UInt")
+	inGameNumber:=poe.read(serverData+0x39C8, "Char")
 	global isProperInGame:=inGameNumber*100/100
 	if(isProperInGame > 2){
 		;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/IngameData.cs :        public Entity LocalPlayer => ReadObject<Entity>(Address + 0x180);

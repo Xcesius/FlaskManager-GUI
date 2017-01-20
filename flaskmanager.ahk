@@ -286,16 +286,9 @@ readPlayerStats(byRef PlayerStats){
 	InGameData:=poe.read(IngameState+0x160, "Int64")
 	serverData:=poe.read(IngameState+0x168, "Int64")
 	}
-	; public string Name => M.ReadStringU(M.ReadLong(Address + 8, 0));
-	
-	inGameNumber:=poe.read(serverData+0x39C8, "Int64")
+	inGameNumber:=poe.read(serverData+0x39C8, "UInt")
 	global isProperInGame:=inGameNumber*100/100
 	if(isProperInGame > 2){
-		;serverData:=poe.read(IngameState+0x168+0x28, "Int64")
-		;flaskArray:=poe.read(serverData+0x240, "Int64", 0x9C8, 0x948, 0xA00, 0x20)
-		;flask1:=poe.read(flaskArray+2*8)
-		;flask1Max:=poe.read(flask1+0x0, "Int64", 0x20)
-		;MsgBox %flask1Max%
 		;https://github.com/TehCheat/PoEHUD/tree/x64/src/Poe/RemoteMemoryObjects/IngameData.cs :        public Entity LocalPlayer => ReadObject<Entity>(Address + 0x180);
 		LocalPlayer:=poe.read(InGameData+0x180, "Int64")
 		;https://github.com/badplayerr/beta-autopot/blob/master/Autopot.ahk :         PlayerMain:=ReadMemUInt(pH,PlayerBase+4)       PlayerStatsOffset:=ReadMemUInt(pH,PlayerMain+0xC)
